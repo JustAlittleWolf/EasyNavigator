@@ -1,0 +1,22 @@
+{
+  "easynavigator.navigationargumenttype.error": "Could not parse navigation argument",
+  "easynavigator.command.navigating": "Now navigating to",
+  "easynavigator.command.converted": "Detected a change in dimensions. Now navigating to",
+  "easynavigator.command.arrived": "Arrived at destination. Disabling navigator.",
+  "easynavigator.prefix": "[Navigator]",
+
+  "yacl3.config.minecraft:easynavigator.convertNetherCoordinates": "Convert nether coordinates",
+  "yacl3.config.minecraft:easynavigator.scale": "Compass scale",
+  "yacl3.config.minecraft:easynavigator.displayPosition": "Compass position",
+  "yacl3.config.minecraft:easynavigator.padding": "Screen padding",
+  "yacl3.config.minecraft:easynavigator.arrivalDistance": "Arrival distance",
+  "yacl3.config.minecraft:easynavigator.category.settings": "Settings",
+
+  "yacl3.config.enum.CompassPosition.top": "Top",
+  "yacl3.config.enum.CompassPosition.top_right": "Top right",
+  "yacl3.config.enum.CompassPosition.right": "Right",
+  "yacl3.config.enum.CompassPosition.bottom_right": "Bottom right",
+  "yacl3.config.enum.CompassPosition.bottom_left": "Bottom left",
+  "yacl3.config.enum.CompassPosition.left": "Left",
+  "yacl3.config.enum.CompassPosition.top_left": "Top left"
+}

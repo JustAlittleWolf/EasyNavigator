@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "easynavigator",
+  "version": "${version}",
+  "name": "EasyNavigator",
+  "description": "Navigate coordinates efficiently by having a compass that shows you the way!",
+  "authors": [
+    "JustAlittleWolf"
+  ],
+  "contact": {
+    "repo": "https://github.com/JustAlittleWolf/EasyNavigator"
+  },
+  "license": "MIT",
+  "icon": "assets/easynavigator/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.wolfii.easynavigator.client.EasyNavigatorClient"
+    ],
+    "modmenu": [
+      "me.wolfii.easynavigator.client.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "easynavigator.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric": "*",
+    "minecraft": "~1.20",
+    "yet_another_config_lib_v3": ">=3.2.0"
+  },
+  "suggests": {
+    "modmenu": ">=7.0.0"
+  }
+}
