@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class CommandManager {
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess ignoredRegistryAccess) {
-        final LiteralCommandNode<FabricClientCommandSource> navigationNode = dispatcher.register(ClientCommandManager.literal("navigate")
+        final LiteralCommandNode<FabricClientCommandSource> navigateNode = dispatcher.register(ClientCommandManager.literal("navigate")
                 .then(ClientCommandManager.argument("blockpos", new NavigationArgumentType())
                 .executes((context) -> {
                     PosArgument posArgument = context.getArgument("blockpos", PosArgument.class);
@@ -56,7 +56,17 @@ public class CommandManager {
                     );
                     return 1;
                 })));
-        dispatcher.register(ClientCommandManager.literal("easynavigator:navigate").redirect(navigationNode));
+        dispatcher.register(ClientCommandManager.literal("easynavigator:navigate").redirect(navigateNode));
+        final LiteralCommandNode<FabricClientCommandSource> navigationNode = dispatcher.register(ClientCommandManager.literal("navigation")
+                .then(ClientCommandManager.literal("stop")
+                        .executes((context) -> {
+                            EasyNavigator.clearTargetBlockPos();
+                            NavigationMessages.sendMessage(
+                                    Text.translatable("easynavigator.command.stopnavigating").formatted(Formatting.WHITE)
+                            );
+                            return 1;
+                        })));
+        dispatcher.register(ClientCommandManager.literal("easynavigator:navigation").redirect(navigationNode));
     }
 
     private static class NavigationArgumentType implements ArgumentType<PosArgument> {

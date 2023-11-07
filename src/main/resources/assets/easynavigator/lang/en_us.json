@@ -4,6 +4,7 @@
   "easynavigator.command.converted": "Detected a change in dimensions. Now navigating to",
   "easynavigator.command.arrived": "Arrived at destination. Disabling navigator.",
   "easynavigator.command.alreadyattarget": "Already at destination.",
+  "easynavigator.command.stopnavigating": "Stopped navigation",
   "easynavigator.prefix": "[Navigator]",
   "easynavigator.chat.hovermessage": "Click to navigate to",
 
