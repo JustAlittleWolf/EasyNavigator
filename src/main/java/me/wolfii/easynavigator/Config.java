@@ -1,6 +1,5 @@
 package me.wolfii.easynavigator;
 
-import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.autogen.*;
@@ -9,13 +8,9 @@ import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import me.wolfii.easynavigator.render.CompassPosition;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.injection.Desc;
-import org.spongepowered.asm.mixin.injection.selectors.ITargetSelectorDynamic;
 
 import java.awt.*;
-import java.sql.SQLSyntaxErrorException;
 
 public class Config {
     private static final ConfigClassHandler<Config> configInstance = ConfigClassHandler.createBuilder(Config.class)
@@ -62,4 +57,8 @@ public class Config {
     @ColorField
     @SerialEntry
     public Color chatHighlightColor = new Color(85, 255, 85);
+    @AutoGen(category = "chat")
+    @IntSlider(min = 1, max = 7, step = 1)
+    @SerialEntry
+    public int matchingDistance = 4;
 }

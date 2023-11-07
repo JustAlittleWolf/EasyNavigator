@@ -15,6 +15,18 @@
   "yacl3.config.minecraft:easynavigator.arrivalDistance": "Arrival distance",
   "yacl3.config.minecraft:easynavigator.highlightChatMessages": "Highlight chat messages",
   "yacl3.config.minecraft:easynavigator.chatHighlightColor": "Chat highlight color",
+  "yacl3.config.minecraft:easynavigator.matchingDistance": "Coordinate matching distance",
+
+
+  "yacl3.config.minecraft:easynavigator.convertNetherCoordinates.desc": "When enabled, will automatically convert the destination coordinates for you when you change dimensions.",
+  "yacl3.config.minecraft:easynavigator.scale.desc": "Changes how large the compass is displayed.",
+  "yacl3.config.minecraft:easynavigator.displayPosition.desc": "Changes where the compass is positioned.",
+  "yacl3.config.minecraft:easynavigator.padding.desc": "Allows you to move the compass further to the center of the screen, increasing the distance to the edges.",
+  "yacl3.config.minecraft:easynavigator.arrivalDistance.desc": "Changes how close you have to be to your destination for the system to detect that you have arrived.",
+  "yacl3.config.minecraft:easynavigator.highlightChatMessages.desc": "Toggles automatic highlighting of found coordinates in the chat.",
+  "yacl3.config.minecraft:easynavigator.chatHighlightColor.desc": "Changes the color of highlighted coordinates in chat.",
+  "yacl3.config.minecraft:easynavigator.matchingDistance.desc": "How far can numbers be apart to still be considered the same coordinate.",
+
   "yacl3.config.minecraft:easynavigator.category.navigator": "Navigator",
   "yacl3.config.minecraft:easynavigator.category.chat": "Chat",
 
