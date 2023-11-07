@@ -9,8 +9,12 @@ import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import me.wolfii.easynavigator.render.CompassPosition;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.injection.Desc;
+import org.spongepowered.asm.mixin.injection.selectors.ITargetSelectorDynamic;
 
+import java.awt.*;
 import java.sql.SQLSyntaxErrorException;
 
 public class Config {
@@ -30,24 +34,32 @@ public class Config {
         return Config.configInstance.generateGui().generateScreen(parent);
     }
 
-    @AutoGen(category = "settings")
+    @AutoGen(category = "navigator")
     @Boolean(formatter = Boolean.Formatter.ON_OFF)
     @SerialEntry
     public boolean convertNetherCoordinates = true;
-    @AutoGen(category = "settings")
+    @AutoGen(category = "navigator")
     @FloatSlider(min = 0.5f, max = 4.0f, step = 0.1f)
     @SerialEntry
     public float scale = 2.0f;
-    @AutoGen(category = "settings")
+    @AutoGen(category = "navigator")
     @EnumCycler
     @SerialEntry
     public CompassPosition displayPosition = CompassPosition.TOP;
-    @AutoGen(category = "settings")
+    @AutoGen(category = "navigator")
     @IntSlider(min = -4, max = 16, step = 1)
     @SerialEntry
     public int padding = 0;
-    @AutoGen(category = "settings")
+    @AutoGen(category = "navigator")
     @IntSlider(min = 0, max = 100, step = 1)
     @SerialEntry
     public int arrivalDistance = 7;
+    @AutoGen(category = "chat")
+    @Boolean(formatter = Boolean.Formatter.ON_OFF)
+    @SerialEntry
+    public boolean highlightChatMessages = true;
+    @AutoGen(category = "chat")
+    @ColorField
+    @SerialEntry
+    public Color chatHighlightColor = new Color(85, 255, 85);
 }

@@ -1,4 +1,4 @@
-package me.wolfii.easynavigator.client;
+package me.wolfii.easynavigator.chat;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;

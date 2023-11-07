@@ -7,6 +7,7 @@
     "CompassItemMixin"
   ],
   "client": [
+    "ChatHudMixin",
     "CompassItemMixin",
     "DrawContextAccessor",
     "DrawContextMixin"

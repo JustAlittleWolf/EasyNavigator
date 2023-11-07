@@ -2,6 +2,7 @@ package me.wolfii.easynavigator.client;
 
 import me.wolfii.easynavigator.Config;
 import me.wolfii.easynavigator.EasyNavigator;
+import me.wolfii.easynavigator.chat.NavigationMessages;
 import me.wolfii.easynavigator.render.NavigationRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;

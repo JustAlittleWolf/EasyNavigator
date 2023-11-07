@@ -7,9 +7,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import me.wolfii.easynavigator.Config;
 import me.wolfii.easynavigator.EasyNavigator;
+import me.wolfii.easynavigator.chat.NavigationMessages;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.argument.PosArgument;
@@ -19,13 +23,14 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandManager {
     public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess ignoredRegistryAccess) {
-        dispatcher.register(ClientCommandManager.literal("navigate")
+        final LiteralCommandNode<FabricClientCommandSource> navigationNode = dispatcher.register(ClientCommandManager.literal("navigate")
                 .then(ClientCommandManager.argument("blockpos", new NavigationArgumentType())
                 .executes((context) -> {
                     PosArgument posArgument = context.getArgument("blockpos", PosArgument.class);
@@ -33,6 +38,16 @@ public class CommandManager {
                     ServerCommandSource serverCommandSource = new ServerCommandSource(null, commandSource.getPosition(), commandSource.getRotation(), null, 0, null, null, null, commandSource.getEntity());
 
                     BlockPos blockPos = posArgument.toAbsoluteBlockPos(serverCommandSource);
+                    if(MinecraftClient.getInstance().player != null) {
+                        Vec3d playerPos = MinecraftClient.getInstance().player.getPos().multiply(1, 0, 1);
+                        Vec3d targetPos = blockPos.toCenterPos().multiply(1, 0, 1);
+                        double squaredDistanceToTarget = playerPos.squaredDistanceTo(targetPos);
+                        if (squaredDistanceToTarget < Config.getConfig().arrivalDistance * Config.getConfig().arrivalDistance) {
+                            NavigationMessages.sendMessage(Text.translatable("easynavigator.command.alreadyattarget").formatted(Formatting.WHITE));
+                            return 1;
+                        }
+                    }
+
                     EasyNavigator.setTargetBlockPos(blockPos);
                     NavigationMessages.sendMessage(
                             Text.translatable("easynavigator.command.navigating").formatted(Formatting.WHITE)
@@ -41,6 +56,7 @@ public class CommandManager {
                     );
                     return 1;
                 })));
+        dispatcher.register(ClientCommandManager.literal("easynavigator:navigate").redirect(navigationNode));
     }
 
     private static class NavigationArgumentType implements ArgumentType<PosArgument> {

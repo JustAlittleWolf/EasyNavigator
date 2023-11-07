@@ -1,6 +1,6 @@
 package me.wolfii.easynavigator;
 
-import me.wolfii.easynavigator.client.NavigationMessages;
+import me.wolfii.easynavigator.chat.NavigationMessages;
 import me.wolfii.easynavigator.item.NbtHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
