@@ -26,6 +26,7 @@ You can also use commands to start and stop your travels. The following two comm
 
 
 - [Yet Another Config Lib](https://modrinth.com/mod/yacl) 3.2.0 or higher is **required**
+- [Fabric API](https://modrinth.com/mod/fabric-api) is **required**
 - [Modmenu](https://modrinth.com/mod/modmenu) is **suggested**
 
 ## Settings
