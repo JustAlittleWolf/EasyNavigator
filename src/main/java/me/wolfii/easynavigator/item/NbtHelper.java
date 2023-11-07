@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 
 public class NbtHelper {
     public static void focusCompassOn(RegistryKey<World> worldKey, BlockPos pos, NbtCompound nbt) {
-        System.out.println(pos);
         nbt.put("LodestonePos", net.minecraft.nbt.NbtHelper.fromBlockPos(pos));
         DataResult<NbtElement> var10000 = World.CODEC.encodeStart(NbtOps.INSTANCE, worldKey);
         var10000.result().ifPresent((nbtElement) -> {

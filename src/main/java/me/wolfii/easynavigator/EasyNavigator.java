@@ -26,7 +26,6 @@ public class EasyNavigator {
 
         if (minecraftClient.world != null) {
             RegistryKey<World> worldKey = minecraftClient.world.getRegistryKey();
-            System.out.println(worldKey);
             BlockPos targetBlockPos = EasyNavigator.targetBlockPos;
             NbtCompound nbtCompound = EasyNavigator.COMPASS_ITEM_STACK.getOrCreateNbt();
             NbtHelper.focusCompassOn(worldKey, targetBlockPos, nbtCompound);
