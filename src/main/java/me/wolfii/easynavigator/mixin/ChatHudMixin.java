@@ -3,8 +3,11 @@ package me.wolfii.easynavigator.mixin;
 import me.wolfii.easynavigator.Config;
 import me.wolfii.easynavigator.chat.RegexMatch;
 import me.wolfii.easynavigator.chat.TextTool;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -17,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +29,7 @@ import java.util.regex.Pattern;
 public class ChatHudMixin {
     @Unique
     @RegExp
-    String pattern = "-?\\d+[.]?\\d*[^.<>()][^\\d<>()]{1,5}-?\\d+[.]?\\d*([^.<>()][^\\d<>()]{1,5}-?\\d+[.]?\\d*)?";
+    String pattern = "(-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b|-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b)";
     @Unique
     private Pattern coordinatePattern;
     @Unique
@@ -44,9 +48,7 @@ public class ChatHudMixin {
         }
         if (!Config.getConfig().highlightChatMessages)
             return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
-        String text = message.getString();
-        text = text.replace(',', '.');
-        text = text.replaceAll("§.", "");
+        String text = sanitizeMessage(message.getString());
         Matcher matcher = coordinatePattern.matcher(text);
 
         ArrayList<RegexMatch> matches = new ArrayList<>();
@@ -63,9 +65,11 @@ public class ChatHudMixin {
 
     @Unique
     private MutableText checkMessageRecursive(Text message, ArrayList<RegexMatch> matches, int currentIndex) {
+        //@Todo allow multiple matches to be matched in a single message
         MutableText modifiedMessage = Text.empty();
-        RegexMatch regexMatch = matches.isEmpty() ? null : matches.get(0);
+        
         if (!message.copyContentOnly().getString().isEmpty()) {
+            RegexMatch regexMatch = matches.isEmpty() ? null : matches.get(0);
             if (TextTool.applyCoordinateHighlighting(modifiedMessage, currentIndex, message.copyContentOnly().setStyle(message.getStyle()), regexMatch)) {
                 matches.remove(0);
             }
@@ -78,5 +82,12 @@ public class ChatHudMixin {
         }
 
         return modifiedMessage;
+    }
+
+    @Unique
+    private String sanitizeMessage(String message) {
+        message = message.replaceAll("(?<=\\d),(?=\\d)", ".");
+        message = message.replaceAll("§.", "");
+        return message;
     }
 }

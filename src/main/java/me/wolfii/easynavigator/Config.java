@@ -58,7 +58,7 @@ public class Config {
     @SerialEntry
     public Color chatHighlightColor = new Color(85, 255, 85);
     @AutoGen(category = "chat")
-    @IntSlider(min = 1, max = 7, step = 1)
+    @IntSlider(min = 1, max = 9, step = 1)
     @SerialEntry
-    public int matchingDistance = 4;
+    public int matchingDistance = 5;
 }
