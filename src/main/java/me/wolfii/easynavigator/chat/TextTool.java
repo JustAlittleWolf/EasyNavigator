@@ -1,6 +1,6 @@
 package me.wolfii.easynavigator.chat;
 
-import me.wolfii.easynavigator.Config;
+import me.wolfii.easynavigator.config.Config;
 import net.minecraft.text.*;
 import net.minecraft.util.math.BlockPos;
 
@@ -25,15 +25,15 @@ public class TextTool {
             parentMessage.append(Text.literal(prefix).setStyle(text.getStyle()));
         }
 
-        Style highlightingStyle =  Style.EMPTY
+        Style highlightingStyle = Style.EMPTY
                 .withColor(Config.getConfig().chatHighlightColor.getRGB())
                 .withBold(text.getStyle().isBold())
                 .withItalic(text.getStyle().isItalic())
                 .withHoverEvent(
-                new HoverEvent(HoverEvent.Action.SHOW_TEXT, generateHoverMessage(regexMatch.position()))
-        ).withClickEvent(
-                new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/easynavigator:navigate %s %s", regexMatch.position().getX(), regexMatch.position().getZ()))
-        );
+                        new HoverEvent(HoverEvent.Action.SHOW_TEXT, generateHoverMessage(regexMatch.position()))
+                ).withClickEvent(
+                        new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/easynavigator:navigate %s %s", regexMatch.position().getX(), regexMatch.position().getZ()))
+                );
         String highlighted = message.substring(splitStart, splitEnd);
         parentMessage.append(Text.literal(highlighted).setStyle(highlightingStyle));
 

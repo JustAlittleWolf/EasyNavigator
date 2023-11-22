@@ -1,4 +1,4 @@
-package me.wolfii.easynavigator;
+package me.wolfii.easynavigator.config;
 
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
@@ -64,4 +64,18 @@ public class Config {
     @IntSlider(min = 1, max = 9, step = 1)
     @SerialEntry
     public int matchingDistance = 5;
+    @AutoGen(category = "survival")
+    @MasterTickBox({"compassChangeBehaviour", "alertOnCompassChange"})
+    @SerialEntry
+    public boolean immersiveMode = false;
+    @AutoGen(category = "survival")
+    @EnumCycler
+    @SerialEntry
+    public CompassChangeBehaviour compassChangeBehaviour = CompassChangeBehaviour.STOP;
+    @AutoGen(category = "survival")
+    @Boolean(formatter = Boolean.Formatter.ON_OFF)
+    @SerialEntry
+    public boolean alertOnCompassChange = false;
+
+    public static int compassCheckInterval = 5;
 }

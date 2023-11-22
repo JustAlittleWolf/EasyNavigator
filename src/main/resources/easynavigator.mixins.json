@@ -4,7 +4,8 @@
   "package": "me.wolfii.easynavigator.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "CompassItemMixin"
+    "CompassItemMixin",
+    "PlayerInventoryAccessor"
   ],
   "client": [
     "ChatHudMixin",

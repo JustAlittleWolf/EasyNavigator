@@ -7,6 +7,10 @@
   "easynavigator.command.stopnavigating": "Stopped navigation",
   "easynavigator.prefix": "[Navigator]",
   "easynavigator.chat.hovermessage": "Click to navigate to",
+  "easynavigator.immersivemode.cannotstart": "Immersive mode requires you to have a compass to navigate",
+  "easynavigator.immersivemode.pausenavigating": "Navigation paused until a compass is reacquired",
+  "easynavigator.immersivemode.resumenavigating": "Navigation resumed",
+  "easynavigator.immersivemode.abortnavigating": "Stopped navigation",
 
   "yacl3.config.minecraft:easynavigator.convertNetherCoordinates": "Convert nether coordinates",
   "yacl3.config.minecraft:easynavigator.scale": "Compass scale",
@@ -16,7 +20,9 @@
   "yacl3.config.minecraft:easynavigator.highlightChatMessages": "Highlight chat messages",
   "yacl3.config.minecraft:easynavigator.chatHighlightColor": "Chat highlight color",
   "yacl3.config.minecraft:easynavigator.matchingDistance": "Coordinate matching distance",
-
+  "yacl3.config.minecraft:easynavigator.immersiveMode": "Immversive Mode",
+  "yacl3.config.minecraft:easynavigator.compassChangeBehaviour": "Compass drop behaviour",
+  "yacl3.config.minecraft:easynavigator.alertOnCompassChange": "Warn on compass change",
 
   "yacl3.config.minecraft:easynavigator.convertNetherCoordinates.desc": "When enabled, will automatically convert the destination coordinates for you when you change dimensions.",
   "yacl3.config.minecraft:easynavigator.scale.desc": "Changes how large the compass is displayed.",
@@ -26,9 +32,13 @@
   "yacl3.config.minecraft:easynavigator.highlightChatMessages.desc": "Toggles automatic highlighting of found coordinates in the chat.",
   "yacl3.config.minecraft:easynavigator.chatHighlightColor.desc": "Changes the color of highlighted coordinates in chat.",
   "yacl3.config.minecraft:easynavigator.matchingDistance.desc": "How far can numbers be apart to still be considered the same coordinate.",
+  "yacl3.config.minecraft:easynavigator.immersiveMode.desc": "Requires you to have a Compass in your inventory to start navigating.",
+  "yacl3.config.minecraft:easynavigator.compassChangeBehaviour.desc": "Decide what happens when you drop your compass while navigating.",
+  "yacl3.config.minecraft:easynavigator.alertOnCompassChange.desc": "When enabled, will send a message when you are navigating and dropped your compass.",
 
   "yacl3.config.minecraft:easynavigator.category.navigator": "Navigator",
   "yacl3.config.minecraft:easynavigator.category.chat": "Chat",
+  "yacl3.config.minecraft:easynavigator.category.survival": "Survival",
 
   "yacl3.config.enum.CompassPosition.top": "Top",
   "yacl3.config.enum.CompassPosition.top_right": "Top right",
@@ -36,5 +46,8 @@
   "yacl3.config.enum.CompassPosition.bottom_right": "Bottom right",
   "yacl3.config.enum.CompassPosition.bottom_left": "Bottom left",
   "yacl3.config.enum.CompassPosition.left": "Left",
-  "yacl3.config.enum.CompassPosition.top_left": "Top left"
+  "yacl3.config.enum.CompassPosition.top_left": "Top left",
+
+  "yacl3.config.enum.CompassChangeBehaviour.stop": "Stop navigation",
+  "yacl3.config.enum.CompassChangeBehaviour.pause": "Pause navigation"
 }

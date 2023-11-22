@@ -1,13 +1,10 @@
 package me.wolfii.easynavigator.mixin;
 
-import me.wolfii.easynavigator.Config;
+import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.chat.RegexMatch;
 import me.wolfii.easynavigator.chat.TextTool;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -20,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +25,7 @@ import java.util.regex.Pattern;
 public class ChatHudMixin {
     @Unique
     @RegExp
-    String pattern = "(-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b|-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b)";
+    String pattern = "(-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n:]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n:]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b|-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n:]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b)";
     @Unique
     private Pattern coordinatePattern;
     @Unique
@@ -67,7 +63,7 @@ public class ChatHudMixin {
     private MutableText checkMessageRecursive(Text message, ArrayList<RegexMatch> matches, int currentIndex) {
         //@Todo allow multiple matches to be matched in a single message
         MutableText modifiedMessage = Text.empty();
-        
+
         if (!message.copyContentOnly().getString().isEmpty()) {
             RegexMatch regexMatch = matches.isEmpty() ? null : matches.get(0);
             if (TextTool.applyCoordinateHighlighting(modifiedMessage, currentIndex, message.copyContentOnly().setStyle(message.getStyle()), regexMatch)) {

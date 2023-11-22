@@ -1,6 +1,6 @@
 package me.wolfii.easynavigator.mixin;
 
-import me.wolfii.easynavigator.Config;
+import me.wolfii.easynavigator.config.Config;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DrawContext.class)
 public class DrawContextMixin {
-    @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V", shift = At.Shift.AFTER))
+    @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;scale(FFF)V", shift = At.Shift.AFTER))
     private void scaleItemRendering(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int z, CallbackInfo ci) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
-        if(!nbtCompound.contains("CustomScale")) return;
-        if(!nbtCompound.getBoolean("CustomScale")) return;
+        if (!nbtCompound.contains("CustomScale")) return;
+        if (!nbtCompound.getBoolean("CustomScale")) return;
         float customScale = Config.getConfig().scale;
         ((DrawContextAccessor) this).getMatrices().scale(customScale, customScale, customScale);
     }
