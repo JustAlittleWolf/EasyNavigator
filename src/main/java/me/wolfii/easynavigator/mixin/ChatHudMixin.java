@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class ChatHudMixin {
     @Unique
     @RegExp
-    String pattern = "(-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n:]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n:]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b|-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n:]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b)";
+    String pattern = "(?<=(^|[^.]))(-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b|-?\\b\\d[\\d]*\\.?[\\d]*\\b[^.()\\d\\n:][^()\\d\\n]{0,5}-?\\b\\d[\\d]*\\.?[\\d]*\\b)";
     @Unique
     private Pattern coordinatePattern;
     @Unique
