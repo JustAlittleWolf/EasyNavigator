@@ -55,6 +55,10 @@ public class Config {
     @AutoGen(category = "chat")
     @Boolean(formatter = Boolean.Formatter.ON_OFF)
     @SerialEntry
+    public boolean navigatorMessages = true;
+    @AutoGen(category = "chat")
+    @Boolean(formatter = Boolean.Formatter.ON_OFF)
+    @SerialEntry
     public boolean highlightChatMessages = true;
     @AutoGen(category = "chat")
     @ColorField

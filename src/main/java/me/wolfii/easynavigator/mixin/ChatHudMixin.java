@@ -62,6 +62,7 @@ public class ChatHudMixin {
     @Unique
     private MutableText checkMessageRecursive(Text message, ArrayList<RegexMatch> matches, int currentIndex) {
         //@Todo allow multiple matches to be matched in a single message
+        //@Todo fix matching in some weird cases, for example on hypixel
         MutableText modifiedMessage = Text.empty();
 
         if (!message.copyContentOnly().getString().isEmpty()) {
