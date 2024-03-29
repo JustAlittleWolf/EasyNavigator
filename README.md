@@ -11,7 +11,7 @@ If there is a bug or an incompatibility with another mod please let me know on [
 There are two different ways you can start the navigation mode. The easiest is by receiving a message with coordinates.
 You can simply click the highlighted coordinates to start your journey.
 
-<img src="https://i.imgur.com/qrSaWzw.png" width=400 alt="Example image">
+<img src="https://i.imgur.com/0jRX5Yc.png" width=400 alt="Example image">
 
 Ingame this would look something like this
 

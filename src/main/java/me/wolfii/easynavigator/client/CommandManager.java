@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import me.wolfii.easynavigator.chat.TextTool;
 import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.EasyNavigator;
 import me.wolfii.easynavigator.chat.NavigationMessages;
@@ -20,6 +21,9 @@ import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.Vec2ArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +61,12 @@ public class CommandManager {
                             NavigationMessages.sendMessage(
                                     Text.translatable("easynavigator.command.navigating").formatted(Formatting.WHITE)
                                             .append(Text.literal(" "))
-                                            .append(Text.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).formatted(Formatting.GREEN))
+                                            .append(Text.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).setStyle(Style.EMPTY.withColor(Formatting.GREEN)
+                                                    .withHoverEvent(
+                                                            new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextTool.generateHoverMessage(blockPos))
+                                                    ).withClickEvent(
+                                                            new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/easynavigator:navigate %s %s", blockPos.getX(), blockPos.getZ()))
+                                                    )))
                             );
                             return 1;
                         })));

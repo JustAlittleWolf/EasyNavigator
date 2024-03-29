@@ -1,19 +1,20 @@
 package me.wolfii.easynavigator.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import me.wolfii.easynavigator.chat.NavigationMessages;
 import me.wolfii.easynavigator.config.Config;
-import me.wolfii.easynavigator.chat.RegexMatch;
 import me.wolfii.easynavigator.chat.TextTool;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.util.ChatMessages;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
 import org.intellij.lang.annotations.RegExp;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ArrayList;
@@ -36,8 +37,9 @@ public class ChatHudMixin {
      * The Redirect is at such a weird position to avoid conflicts with chatpatches
      */
     @Redirect(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/ChatMessages;breakRenderedChatMessageLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/client/font/TextRenderer;)Ljava/util/List;"))
-    private List<OrderedText> checkForCoordinates(StringVisitable stringVisitable, int width, TextRenderer textRenderer) {
-        Text message = (Text) stringVisitable;
+    private List<OrderedText> checkForCoordinates(StringVisitable stringVisitable, int width, TextRenderer textRenderer, @Local(argsOnly = true) boolean refresh) {
+        if (refresh) return ChatMessages.breakRenderedChatMessageLines(stringVisitable, width, textRenderer);
+        MutableText message = (MutableText) stringVisitable;
         if (Config.getConfig().matchingDistance != lastMatchingDistance) {
             coordinatePattern = Pattern.compile(pattern.replaceAll("5", String.valueOf(Config.getConfig().matchingDistance - 1)));
             lastMatchingDistance = Config.getConfig().matchingDistance;
@@ -45,40 +47,28 @@ public class ChatHudMixin {
         if (!Config.getConfig().highlightChatMessages)
             return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
         String text = sanitizeMessage(message.getString());
+        if (text.startsWith(Text.translatable("easynavigator.prefix").getString()))
+            return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
         Matcher matcher = coordinatePattern.matcher(text);
 
-        ArrayList<RegexMatch> matches = new ArrayList<>();
         while (matcher.find()) {
             String result = matcher.group();
-            int start = matcher.start();
-            int end = matcher.end();
 
-            matches.add(RegexMatch.of(result, start, end));
+            BlockPos matchPos = blockPosFromMatch(result);
+            message.append(TextTool.getMatchMessage(matchPos));
         }
-        if (matches.isEmpty()) return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
-        return ChatMessages.breakRenderedChatMessageLines(checkMessageRecursive(message, matches, 0), width, textRenderer);
+        return ChatMessages.breakRenderedChatMessageLines(message, width, textRenderer);
     }
 
     @Unique
-    private MutableText checkMessageRecursive(Text message, ArrayList<RegexMatch> matches, int currentIndex) {
-        //@Todo allow multiple matches to be matched in a single message
-        //@Todo fix matching in some weird cases, for example on hypixel
-        MutableText modifiedMessage = Text.empty();
-
-        if (!message.copyContentOnly().getString().isEmpty()) {
-            RegexMatch regexMatch = matches.isEmpty() ? null : matches.get(0);
-            if (TextTool.applyCoordinateHighlighting(modifiedMessage, currentIndex, message.copyContentOnly().setStyle(message.getStyle()), regexMatch)) {
-                matches.remove(0);
-            }
-            currentIndex += message.copyContentOnly().getString().length();
+    private BlockPos blockPosFromMatch(String match) {
+        Pattern numberPattern = Pattern.compile("-?\\d+(\\.\\d)*\\d*");
+        Matcher numberMatcher = numberPattern.matcher(match);
+        ArrayList<Double> numbers = new ArrayList<>();
+        while (numberMatcher.find()) {
+            numbers.add(Double.parseDouble(numberMatcher.group()));
         }
-
-        for (Text subtext : message.getSiblings()) {
-            modifiedMessage.append(checkMessageRecursive(subtext, matches, currentIndex));
-            currentIndex += subtext.getString().length();
-        }
-
-        return modifiedMessage;
+        return new BlockPos(numbers.get(0).intValue(), 0, numbers.get(numbers.size() - 1).intValue());
     }
 
     @Unique
