@@ -3,12 +3,12 @@ package me.wolfii.easynavigator;
 import me.wolfii.easynavigator.chat.NavigationMessages;
 import me.wolfii.easynavigator.config.CompassChangeBehaviour;
 import me.wolfii.easynavigator.config.Config;
-import me.wolfii.easynavigator.item.NbtHelper;
+import me.wolfii.easynavigator.item.ComponentHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -32,9 +32,10 @@ public class EasyNavigator {
 
         if (minecraftClient.world != null) {
             RegistryKey<World> worldKey = minecraftClient.world.getRegistryKey();
+
             BlockPos targetBlockPos = EasyNavigator.targetBlockPos;
-            NbtCompound nbtCompound = EasyNavigator.COMPASS_ITEM_STACK.getOrCreateNbt();
-            NbtHelper.focusCompassOn(worldKey, targetBlockPos, nbtCompound);
+            ComponentMap componentMap = EasyNavigator.COMPASS_ITEM_STACK.getComponents();
+            ComponentHelper.focusCompassOn(worldKey, targetBlockPos, EasyNavigator.COMPASS_ITEM_STACK);
         }
     }
 

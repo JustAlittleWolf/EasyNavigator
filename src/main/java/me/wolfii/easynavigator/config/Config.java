@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class Config {
     private static final ConfigClassHandler<Config> configInstance = ConfigClassHandler.createBuilder(Config.class)
-            .id(new Identifier("easynavigator"))
+            .id(Identifier.of("easynavigator"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(FabricLoader.getInstance().getConfigDir().resolve("easynavigator.json"))
                     .build())

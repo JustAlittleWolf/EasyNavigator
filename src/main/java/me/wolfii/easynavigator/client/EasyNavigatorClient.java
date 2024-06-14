@@ -3,6 +3,7 @@ package me.wolfii.easynavigator.client;
 import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.EasyNavigator;
 import me.wolfii.easynavigator.chat.NavigationMessages;
+import me.wolfii.easynavigator.item.EasyNavigatorComponentData;
 import me.wolfii.easynavigator.mixin.PlayerInventoryAccessor;
 import me.wolfii.easynavigator.render.NavigationRenderer;
 import net.fabricmc.api.ClientModInitializer;
@@ -37,6 +38,8 @@ public class EasyNavigatorClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onClientTick);
 
         ClientCommandRegistrationCallback.EVENT.register(CommandManager::registerCommand);
+
+        EasyNavigatorComponentData.register();
     }
 
     private void onClientTick(MinecraftClient minecraftClient) {
