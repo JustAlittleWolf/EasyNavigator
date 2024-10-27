@@ -16,6 +16,6 @@ public class NavigationMessages {
         if(player == null) return;
 
         message = prefix.copy().append(message);
-        player.sendMessage(message);
+        player.sendMessage(message, false);
     }
 }
