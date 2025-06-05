@@ -1,10 +1,9 @@
 package me.wolfii.easynavigator.client;
 
-import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.EasyNavigator;
 import me.wolfii.easynavigator.chat.NavigationMessages;
+import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.item.EasyNavigatorComponentData;
-import me.wolfii.easynavigator.mixin.PlayerInventoryAccessor;
 import me.wolfii.easynavigator.render.NavigationRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -19,7 +18,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
 public class EasyNavigatorClient implements ClientModInitializer {
@@ -59,13 +57,11 @@ public class EasyNavigatorClient implements ClientModInitializer {
 
     private void checkForCompass(MinecraftClient minecraftClient) {
         if (minecraftClient.player == null) return;
-        for (DefaultedList<ItemStack> defaultedList : ((PlayerInventoryAccessor) minecraftClient.player.getInventory()).getCombinedInventory()) {
-            for (ItemStack itemStack : defaultedList) {
-                Item item = itemStack.getItem();
-                if (!(item instanceof CompassItem)) continue;
-                EasyNavigator.setPlayerHasCompass(true);
-                return;
-            }
+        for (ItemStack itemStack : minecraftClient.player.getInventory().getMainStacks()) {
+            Item item = itemStack.getItem();
+            if (!(item instanceof CompassItem)) continue;
+            EasyNavigator.setPlayerHasCompass(true);
+            return;
         }
         EasyNavigator.setPlayerHasCompass(false);
     }
@@ -92,9 +88,9 @@ public class EasyNavigatorClient implements ClientModInitializer {
         lastCoordinateScale = coordinateScale;
 
         NavigationMessages.sendMessage(
-                Text.translatable("easynavigator.command.converted").formatted(Formatting.WHITE)
-                        .append(Text.literal(" "))
-                        .append(Text.literal(String.format("[%s, ~, %s]", newBlockPos.getX(), newBlockPos.getZ())).formatted(Formatting.GREEN))
+            Text.translatable("easynavigator.command.converted").formatted(Formatting.WHITE)
+                .append(Text.literal(" "))
+                .append(Text.literal(String.format("[%s, ~, %s]", newBlockPos.getX(), newBlockPos.getZ())).formatted(Formatting.GREEN))
         );
     }
 

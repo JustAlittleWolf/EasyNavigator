@@ -3,11 +3,8 @@
   "minVersion": "0.8",
   "package": "me.wolfii.easynavigator.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "CompassItemMixin",
-    "PlayerInventoryAccessor"
-  ],
   "client": [
+    "CompassItemMixin",
     "ChatHudMixin",
     "CompassItemMixin",
     "DrawContextAccessor",

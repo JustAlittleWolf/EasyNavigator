@@ -63,9 +63,9 @@ public class CommandManager {
                                             .append(Text.literal(" "))
                                             .append(Text.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).setStyle(Style.EMPTY.withColor(Formatting.GREEN)
                                                     .withHoverEvent(
-                                                            new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextTool.generateHoverMessage(blockPos))
+                                                        new HoverEvent.ShowText(TextTool.generateHoverMessage(blockPos))
                                                     ).withClickEvent(
-                                                            new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/easynavigator:navigate %s %s", blockPos.getX(), blockPos.getZ()))
+                                                        new ClickEvent.RunCommand(String.format("/easynavigator:navigate %s %s", blockPos.getX(), blockPos.getZ()))
                                                     )))
                             );
                             return 1;

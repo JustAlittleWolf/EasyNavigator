@@ -6,7 +6,6 @@ import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.item.ComponentHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.component.ComponentMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
@@ -34,7 +33,6 @@ public class EasyNavigator {
             RegistryKey<World> worldKey = minecraftClient.world.getRegistryKey();
 
             BlockPos targetBlockPos = EasyNavigator.targetBlockPos;
-            ComponentMap componentMap = EasyNavigator.COMPASS_ITEM_STACK.getComponents();
             ComponentHelper.focusCompassOn(worldKey, targetBlockPos, EasyNavigator.COMPASS_ITEM_STACK);
         }
     }

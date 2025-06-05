@@ -11,9 +11,9 @@ public class TextTool {
                 .append(Text.literal(String.format("%s, ~, %s", blockPos.getX(), blockPos.getZ())).setStyle(
                         Style.EMPTY.withColor(Config.getConfig().chatHighlightColor.getRGB())
                                 .withHoverEvent(
-                                        new HoverEvent(HoverEvent.Action.SHOW_TEXT, generateHoverMessage(blockPos))
+                                    new HoverEvent.ShowText(generateHoverMessage(blockPos))
                                 ).withClickEvent(
-                                        new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/easynavigator:navigate %s %s", blockPos.getX(), blockPos.getZ()))
+                                    new ClickEvent.RunCommand(String.format("/easynavigator:navigate %s %s", blockPos.getX(), blockPos.getZ()))
                                 )
                 ))
                 .append(Text.literal("]").formatted(Formatting.DARK_GRAY));

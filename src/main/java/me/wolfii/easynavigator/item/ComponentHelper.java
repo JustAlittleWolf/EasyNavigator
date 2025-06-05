@@ -15,6 +15,5 @@ public class ComponentHelper {
         compass.set(DataComponentTypes.LODESTONE_TRACKER, new LodestoneTrackerComponent(Optional.of(new GlobalPos(worldKey, pos)), true));
         compass.set(EasyNavigatorComponentData.REMOVE_ENCHANTMENT_GLINT, true);
         compass.set(EasyNavigatorComponentData.CUSTOM_SCALE, true);
-
     }
 }
