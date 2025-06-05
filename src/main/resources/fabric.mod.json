@@ -25,12 +25,12 @@
     "easynavigator.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": ">=0.16.0",
     "fabric": "*",
-    "minecraft": "~1.21.2",
-    "yet_another_config_lib_v3": ">=3.5.0"
+    "minecraft": "~${minecraft_version}",
+    "yet_another_config_lib_v3": ">=3.6.0"
   },
   "suggests": {
-    "modmenu": ">=11.0.0"
+    "modmenu": "*"
   }
 }
