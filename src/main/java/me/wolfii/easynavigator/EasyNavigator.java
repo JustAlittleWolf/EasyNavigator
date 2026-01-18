@@ -41,8 +41,8 @@ public class EasyNavigator {
         if (!hasTarget) return;
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
-        int padding = (int) (8 * Config.getConfig().scale) + Config.getConfig().padding;
-        int doublePadding = (int) (16 * Config.getConfig().scale) + Config.getConfig().padding;
+        int padding = (int) (4 * Config.getConfig().scale + 2 * Config.getConfig().scale * Config.getConfig().padding);
+        int doublePadding = (int) (8 * Config.getConfig().scale + 2 * Config.getConfig().scale * Config.getConfig().padding);
         renderingPosition = switch (Config.getConfig().displayPosition) {
             case BOTTOM_LEFT -> new Vector2i(padding, height - doublePadding);
             case LEFT -> new Vector2i(padding, (int) (height / 2f) - padding / 2);
@@ -84,7 +84,7 @@ public class EasyNavigator {
     public static void checkArrival(MinecraftClient minecraftClient) {
         if (minecraftClient.player == null) return;
         if (!hasTarget) return;
-        Vec3d playerPos = minecraftClient.player.getPos().multiply(1, 0, 1);
+        Vec3d playerPos = minecraftClient.player.getEntityPos().multiply(1, 0, 1);
         Vec3d targetPos = targetBlockPos.toCenterPos().multiply(1, 0, 1);
         double squaredDistanceToTarget = playerPos.squaredDistanceTo(targetPos);
         if (squaredDistanceToTarget < Config.getConfig().arrivalDistance * Config.getConfig().arrivalDistance) {

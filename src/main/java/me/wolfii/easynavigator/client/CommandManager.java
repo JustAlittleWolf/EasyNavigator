@@ -20,6 +20,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.argument.PosArgument;
 import net.minecraft.command.argument.Vec2ArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
+import net.minecraft.command.permission.PermissionPredicate;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -44,11 +45,11 @@ public class CommandManager {
 
                             PosArgument posArgument = context.getArgument("blockpos", PosArgument.class);
                             FabricClientCommandSource commandSource = context.getSource();
-                            ServerCommandSource serverCommandSource = new ServerCommandSource(null, commandSource.getPosition(), commandSource.getRotation(), null, 0, null, null, null, commandSource.getEntity());
+                            ServerCommandSource serverCommandSource = new ServerCommandSource(null, commandSource.getPosition(), commandSource.getRotation(), null, PermissionPredicate.ALL, null, null, null, commandSource.getEntity());
 
                             BlockPos blockPos = posArgument.toAbsoluteBlockPos(serverCommandSource);
                             if (MinecraftClient.getInstance().player != null) {
-                                Vec3d playerPos = MinecraftClient.getInstance().player.getPos().multiply(1, 0, 1);
+                                Vec3d playerPos = MinecraftClient.getInstance().player.getEntityPos().multiply(1, 0, 1);
                                 Vec3d targetPos = blockPos.toCenterPos().multiply(1, 0, 1);
                                 double squaredDistanceToTarget = playerPos.squaredDistanceTo(targetPos);
                                 if (squaredDistanceToTarget < Config.getConfig().arrivalDistance * Config.getConfig().arrivalDistance) {

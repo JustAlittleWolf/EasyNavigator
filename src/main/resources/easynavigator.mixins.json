@@ -4,10 +4,8 @@
   "package": "me.wolfii.easynavigator.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "CompassItemMixin",
     "ChatHudMixin",
     "CompassItemMixin",
-    "DrawContextAccessor",
     "DrawContextMixin"
   ],
   "injectors": {

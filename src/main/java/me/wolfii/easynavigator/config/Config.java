@@ -45,9 +45,9 @@ public class Config {
     @SerialEntry
     public CompassPosition displayPosition = CompassPosition.TOP;
     @AutoGen(category = "navigator")
-    @IntSlider(min = -4, max = 16, step = 1)
+    @IntSlider(min = -3, max = 12, step = 1)
     @SerialEntry
-    public int padding = 0;
+    public int padding = -2;
     @AutoGen(category = "navigator")
     @IntSlider(min = 0, max = 100, step = 1)
     @SerialEntry
