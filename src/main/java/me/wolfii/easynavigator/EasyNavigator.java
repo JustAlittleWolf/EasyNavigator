@@ -4,17 +4,17 @@ import me.wolfii.easynavigator.chat.NavigationMessages;
 import me.wolfii.easynavigator.config.CompassChangeBehaviour;
 import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.item.ComponentHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
@@ -27,10 +27,10 @@ public class EasyNavigator {
     private static boolean navigationPaused = false;
 
     public static void updateCompassNbt() {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        Minecraft minecraftClient = Minecraft.getInstance();
 
-        if (minecraftClient.world != null) {
-            RegistryKey<World> worldKey = minecraftClient.world.getRegistryKey();
+        if (minecraftClient.level != null) {
+            ResourceKey<Level> worldKey = minecraftClient.level.dimension();
 
             BlockPos targetBlockPos = EasyNavigator.targetBlockPos;
             ComponentHelper.focusCompassOn(worldKey, targetBlockPos, EasyNavigator.COMPASS_ITEM_STACK);
@@ -39,8 +39,8 @@ public class EasyNavigator {
 
     public static void updateRenderingPosition() {
         if (!hasTarget) return;
-        int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
+        int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
         int padding = (int) (4 * Config.getConfig().scale + 2 * Config.getConfig().scale * Config.getConfig().padding);
         int doublePadding = (int) (8 * Config.getConfig().scale + 2 * Config.getConfig().scale * Config.getConfig().padding);
         renderingPosition = switch (Config.getConfig().displayPosition) {
@@ -81,15 +81,15 @@ public class EasyNavigator {
         return hasTarget;
     }
 
-    public static void checkArrival(MinecraftClient minecraftClient) {
+    public static void checkArrival(Minecraft minecraftClient) {
         if (minecraftClient.player == null) return;
         if (!hasTarget) return;
-        Vec3d playerPos = minecraftClient.player.getEntityPos().multiply(1, 0, 1);
-        Vec3d targetPos = targetBlockPos.toCenterPos().multiply(1, 0, 1);
-        double squaredDistanceToTarget = playerPos.squaredDistanceTo(targetPos);
+        Vec3 playerPos = minecraftClient.player.position().multiply(1, 0, 1);
+        Vec3 targetPos = targetBlockPos.getCenter().multiply(1, 0, 1);
+        double squaredDistanceToTarget = playerPos.distanceToSqr(targetPos);
         if (squaredDistanceToTarget < Config.getConfig().arrivalDistance * Config.getConfig().arrivalDistance) {
             hasTarget = false;
-            NavigationMessages.sendMessage(Text.translatable("easynavigator.command.arrived").formatted(Formatting.WHITE));
+            NavigationMessages.sendMessage(Component.translatable("easynavigator.command.arrived").withStyle(ChatFormatting.WHITE));
         }
     }
 
@@ -98,9 +98,9 @@ public class EasyNavigator {
     }
 
     public static boolean playerHasCompass() {
-        ClientPlayerInteractionManager interactionManager = MinecraftClient.getInstance().interactionManager;
+        MultiPlayerGameMode interactionManager = Minecraft.getInstance().gameMode;
         if (interactionManager == null) return playerHasCompass;
-        return interactionManager.getCurrentGameMode() == GameMode.CREATIVE || interactionManager.getCurrentGameMode() == GameMode.SPECTATOR || playerHasCompass;
+        return interactionManager.getPlayerMode() == GameType.CREATIVE || interactionManager.getPlayerMode() == GameType.SPECTATOR || playerHasCompass;
     }
 
     public static void validateImmersiveMove() {
@@ -110,11 +110,11 @@ public class EasyNavigator {
         if (Config.getConfig().compassChangeBehaviour == CompassChangeBehaviour.STOP) {
             clearTargetBlockPos();
             if (Config.getConfig().alertOnCompassChange)
-                NavigationMessages.sendMessage(Text.translatable("easynavigator.immersivemode.abortnavigating").formatted(Formatting.WHITE));
+                NavigationMessages.sendMessage(Component.translatable("easynavigator.immersivemode.abortnavigating").withStyle(ChatFormatting.WHITE));
             return;
         }
         if (Config.getConfig().alertOnCompassChange) {
-            NavigationMessages.sendMessage(Text.translatable("easynavigator.immersivemode." + (navigationPaused ? "pausenavigating" : "resumenavigating")).formatted(Formatting.WHITE));
+            NavigationMessages.sendMessage(Component.translatable("easynavigator.immersivemode." + (navigationPaused ? "pausenavigating" : "resumenavigating")).withStyle(ChatFormatting.WHITE));
         }
     }
 

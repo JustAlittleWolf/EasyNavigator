@@ -1,23 +1,23 @@
 package me.wolfii.easynavigator.render;
 
 import me.wolfii.easynavigator.config.Config;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import me.wolfii.easynavigator.EasyNavigator;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 
 public class NavigationRenderer {
-    public static void render(DrawContext drawContext, RenderTickCounter ignored) {
+    public static void render(GuiGraphics drawContext, DeltaTracker ignored) {
         if (!EasyNavigator.hasTarget()) return;
         if (Config.getConfig().immersiveMode && EasyNavigator.isNavigationPaused()) return;
-        NavigationRenderer.renderItem(drawContext, EasyNavigator.getRenderingPosition().x, EasyNavigator.getRenderingPosition().y, MinecraftClient.getInstance().player, EasyNavigator.getCompassItemStack());
+        NavigationRenderer.renderItem(drawContext, EasyNavigator.getRenderingPosition().x, EasyNavigator.getRenderingPosition().y, Minecraft.getInstance().player, EasyNavigator.getCompassItemStack());
     }
 
-    private static void renderItem(DrawContext context, int x, int y, PlayerEntity player, ItemStack stack) {
+    private static void renderItem(GuiGraphics context, int x, int y, Player player, ItemStack stack) {
         if (!stack.isEmpty()) {
-            context.drawItem(player, stack, x, y, 0);
+            context.renderItem(player, stack, x, y, 0);
         }
     }
 }

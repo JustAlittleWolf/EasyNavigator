@@ -2,10 +2,12 @@ package me.wolfii.easynavigator.mixin;
 
 import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.chat.TextTool;
-import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.gui.hud.ChatHudLine;
+import net.minecraft.client.GuiMessage;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.text.*;
-import net.minecraft.util.math.BlockPos;
 import org.intellij.lang.annotations.RegExp;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mixin(ChatHud.class)
+@Mixin(ChatComponent.class)
 public class ChatHudMixin {
     @Unique
     @RegExp
@@ -28,25 +30,25 @@ public class ChatHudMixin {
     /**
      * Checks the incoming message foor coordinates and if there are any, it makes them clickable.
      */
-    @ModifyArg(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V"))
-    private ChatHudLine checkForCoordinates(ChatHudLine message) {
+    @ModifyArg(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessageToDisplayQueue(Lnet/minecraft/client/GuiMessage;)V"))
+    private GuiMessage checkForCoordinates(GuiMessage message) {
         if (Config.getConfig().matchingDistance != lastMatchingDistance) {
             coordinatePattern = Pattern.compile(pattern.replaceAll("5", String.valueOf(Config.getConfig().matchingDistance - 1)));
             lastMatchingDistance = Config.getConfig().matchingDistance;
         }
         if (!Config.getConfig().highlightChatMessages) return message;
         String text = sanitizeMessage(message.content().getString());
-        if (text.startsWith(Text.translatable("easynavigator.prefix").getString())) return message;
+        if (text.startsWith(Component.translatable("easynavigator.prefix").getString())) return message;
         Matcher matcher = coordinatePattern.matcher(text);
 
-        MutableText newMessage = message.content().copy();
+        MutableComponent newMessage = message.content().copy();
         while (matcher.find()) {
             String result = matcher.group();
 
             BlockPos matchPos = blockPosFromMatch(result);
             newMessage.append(TextTool.getMatchMessage(matchPos));
         }
-        return new ChatHudLine(message.creationTick(), newMessage, message.signature(), message.indicator());
+        return new GuiMessage(message.addedTime(), newMessage, message.signature(), message.tag());
     }
 
     @Unique

@@ -1,14 +1,18 @@
 package me.wolfii.easynavigator.chat;
 
 import me.wolfii.easynavigator.config.Config;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
 
 public class TextTool {
-    public static Text getMatchMessage(BlockPos blockPos) {
-        return Text.literal(" [").formatted(Formatting.DARK_GRAY)
-                .append(Text.literal(String.format("%s, ~, %s", blockPos.getX(), blockPos.getZ())).setStyle(
+    public static Component getMatchMessage(BlockPos blockPos) {
+        return Component.literal(" [").withStyle(ChatFormatting.DARK_GRAY)
+                .append(Component.literal(String.format("%s, ~, %s", blockPos.getX(), blockPos.getZ())).setStyle(
                         Style.EMPTY.withColor(Config.getConfig().chatHighlightColor.getRGB())
                                 .withHoverEvent(
                                     new HoverEvent.ShowText(generateHoverMessage(blockPos))
@@ -16,12 +20,12 @@ public class TextTool {
                                     new ClickEvent.RunCommand(String.format("/easynavigator:navigate %s %s", blockPos.getX(), blockPos.getZ()))
                                 )
                 ))
-                .append(Text.literal("]").formatted(Formatting.DARK_GRAY));
+                .append(Component.literal("]").withStyle(ChatFormatting.DARK_GRAY));
     }
 
-    public static Text generateHoverMessage(BlockPos blockPos) {
-        return Text.translatable("easynavigator.chat.hovermessage").setStyle(Style.EMPTY.withItalic(true))
+    public static Component generateHoverMessage(BlockPos blockPos) {
+        return Component.translatable("easynavigator.chat.hovermessage").setStyle(Style.EMPTY.withItalic(true))
                 .append(" ")
-                .append(Text.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).setStyle(Style.EMPTY.withItalic(true).withColor(Config.getConfig().chatHighlightColor.getRGB())));
+                .append(Component.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).setStyle(Style.EMPTY.withItalic(true).withColor(Config.getConfig().chatHighlightColor.getRGB())));
     }
 }

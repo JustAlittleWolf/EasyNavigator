@@ -1,18 +1,18 @@
 package me.wolfii.easynavigator.item;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.component.ComponentType;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.Identifier;
 
 public class EasyNavigatorComponentData {
-    public static final ComponentType<Boolean> CUSTOM_SCALE = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOLEAN).build();
-    public static final ComponentType<Boolean> REMOVE_ENCHANTMENT_GLINT = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOLEAN).build();
+    public static final DataComponentType<Boolean> CUSTOM_SCALE = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
+    public static final DataComponentType<Boolean> REMOVE_ENCHANTMENT_GLINT = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
 
     public static void register() {
-        Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of("easynavigator", "custom_scale"), CUSTOM_SCALE);
-        Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of("easynavigator", "remove_enchantment_glint"), REMOVE_ENCHANTMENT_GLINT);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath("easynavigator", "custom_scale"), CUSTOM_SCALE);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath("easynavigator", "remove_enchantment_glint"), REMOVE_ENCHANTMENT_GLINT);
     }
 }

@@ -3,18 +3,16 @@ package me.wolfii.easynavigator.config;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.autogen.*;
-import dev.isxander.yacl3.config.v2.api.autogen.Boolean;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import me.wolfii.easynavigator.render.CompassPosition;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.Identifier;
 import java.awt.*;
 
 public class Config {
     private static final ConfigClassHandler<Config> configInstance = ConfigClassHandler.createBuilder(Config.class)
-            .id(Identifier.of("easynavigator"))
+            .id(Identifier.parse("easynavigator"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(FabricLoader.getInstance().getConfigDir().resolve("easynavigator.json"))
                     .build())

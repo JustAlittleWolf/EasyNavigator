@@ -14,55 +14,54 @@ import me.wolfii.easynavigator.EasyNavigator;
 import me.wolfii.easynavigator.chat.NavigationMessages;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
+import net.minecraft.commands.arguments.coordinates.Vec2Argument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.world.phys.Vec3;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.argument.PosArgument;
-import net.minecraft.command.argument.Vec2ArgumentType;
-import net.minecraft.command.argument.Vec3ArgumentType;
-import net.minecraft.command.permission.PermissionPredicate;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandManager {
-    public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess ignoredRegistryAccess) {
+    public static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext ignoredRegistryAccess) {
         final LiteralCommandNode<FabricClientCommandSource> navigateNode = dispatcher.register(ClientCommandManager.literal("navigate")
                 .then(ClientCommandManager.argument("blockpos", new NavigationArgumentType())
                         .executes((context) -> {
                             if (Config.getConfig().immersiveMode && !EasyNavigator.playerHasCompass()) {
-                                NavigationMessages.sendMessage(Text.translatable("easynavigator.immersivemode.cannotstart").formatted(Formatting.WHITE));
+                                NavigationMessages.sendMessage(Component.translatable("easynavigator.immersivemode.cannotstart").withStyle(ChatFormatting.WHITE));
                                 return 1;
                             }
 
-                            PosArgument posArgument = context.getArgument("blockpos", PosArgument.class);
+                            Coordinates posArgument = context.getArgument("blockpos", Coordinates.class);
                             FabricClientCommandSource commandSource = context.getSource();
-                            ServerCommandSource serverCommandSource = new ServerCommandSource(null, commandSource.getPosition(), commandSource.getRotation(), null, PermissionPredicate.ALL, null, null, null, commandSource.getEntity());
+                            CommandSourceStack serverCommandSource = new CommandSourceStack(null, commandSource.getPosition(), commandSource.getRotation(), null, PermissionSet.ALL_PERMISSIONS, null, null, null, commandSource.getEntity());
 
-                            BlockPos blockPos = posArgument.toAbsoluteBlockPos(serverCommandSource);
-                            if (MinecraftClient.getInstance().player != null) {
-                                Vec3d playerPos = MinecraftClient.getInstance().player.getEntityPos().multiply(1, 0, 1);
-                                Vec3d targetPos = blockPos.toCenterPos().multiply(1, 0, 1);
-                                double squaredDistanceToTarget = playerPos.squaredDistanceTo(targetPos);
+                            BlockPos blockPos = posArgument.getBlockPos(serverCommandSource);
+                            if (Minecraft.getInstance().player != null) {
+                                Vec3 playerPos = Minecraft.getInstance().player.position().multiply(1, 0, 1);
+                                Vec3 targetPos = blockPos.getCenter().multiply(1, 0, 1);
+                                double squaredDistanceToTarget = playerPos.distanceToSqr(targetPos);
                                 if (squaredDistanceToTarget < Config.getConfig().arrivalDistance * Config.getConfig().arrivalDistance) {
-                                    NavigationMessages.sendMessage(Text.translatable("easynavigator.command.alreadyattarget").formatted(Formatting.WHITE));
+                                    NavigationMessages.sendMessage(Component.translatable("easynavigator.command.alreadyattarget").withStyle(ChatFormatting.WHITE));
                                     return 1;
                                 }
                             }
 
                             EasyNavigator.setTargetBlockPos(blockPos);
                             NavigationMessages.sendMessage(
-                                    Text.translatable("easynavigator.command.navigating").formatted(Formatting.WHITE)
-                                            .append(Text.literal(" "))
-                                            .append(Text.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).setStyle(Style.EMPTY.withColor(Formatting.GREEN)
+                                    Component.translatable("easynavigator.command.navigating").withStyle(ChatFormatting.WHITE)
+                                            .append(Component.literal(" "))
+                                            .append(Component.literal(String.format("[%s, ~, %s]", blockPos.getX(), blockPos.getZ())).setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)
                                                     .withHoverEvent(
                                                         new HoverEvent.ShowText(TextTool.generateHoverMessage(blockPos))
                                                     ).withClickEvent(
@@ -77,19 +76,19 @@ public class CommandManager {
                         .executes((context) -> {
                             EasyNavigator.clearTargetBlockPos();
                             NavigationMessages.sendMessage(
-                                    Text.translatable("easynavigator.command.stopnavigating").formatted(Formatting.WHITE)
+                                    Component.translatable("easynavigator.command.stopnavigating").withStyle(ChatFormatting.WHITE)
                             );
                             return 1;
                         })));
         dispatcher.register(ClientCommandManager.literal("easynavigator:navigation").redirect(navigationNode));
     }
 
-    private static class NavigationArgumentType implements ArgumentType<PosArgument> {
-        private final Vec2ArgumentType vec2ArgumentType = Vec2ArgumentType.vec2();
-        private final Vec3ArgumentType vec3ArgumentType = Vec3ArgumentType.vec3();
+    private static class NavigationArgumentType implements ArgumentType<Coordinates> {
+        private final Vec2Argument vec2ArgumentType = Vec2Argument.vec2();
+        private final Vec3Argument vec3ArgumentType = Vec3Argument.vec3();
 
         @Override
-        public PosArgument parse(StringReader reader) throws CommandSyntaxException {
+        public Coordinates parse(StringReader reader) throws CommandSyntaxException {
             try {
                 return vec3ArgumentType.parse(reader);
             } catch (Exception ignored) {
@@ -98,7 +97,7 @@ public class CommandManager {
                 return vec2ArgumentType.parse(reader);
             } catch (Exception ignored) {
             }
-            throw new SimpleCommandExceptionType(Text.translatable("easynavigator.navigationargumenttype.error")).createWithContext(reader);
+            throw new SimpleCommandExceptionType(Component.translatable("easynavigator.navigationargumenttype.error")).createWithContext(reader);
         }
 
         @Override

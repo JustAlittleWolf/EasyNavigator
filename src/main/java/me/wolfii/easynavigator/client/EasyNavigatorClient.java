@@ -11,14 +11,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.item.CompassItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CompassItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class EasyNavigatorClient implements ClientModInitializer {
     private double lastCoordinateScale = 1.0;
@@ -40,7 +40,7 @@ public class EasyNavigatorClient implements ClientModInitializer {
         EasyNavigatorComponentData.register();
     }
 
-    private void onClientTick(MinecraftClient minecraftClient) {
+    private void onClientTick(Minecraft minecraftClient) {
         time++;
 
         if (Config.getConfig().immersiveMode && time % Config.compassCheckInterval == 0) {
@@ -55,9 +55,9 @@ public class EasyNavigatorClient implements ClientModInitializer {
         if (time >= dimensionSwitchTimeout) EasyNavigator.checkArrival(minecraftClient);
     }
 
-    private void checkForCompass(MinecraftClient minecraftClient) {
+    private void checkForCompass(Minecraft minecraftClient) {
         if (minecraftClient.player == null) return;
-        for (ItemStack itemStack : minecraftClient.player.getInventory().getMainStacks()) {
+        for (ItemStack itemStack : minecraftClient.player.getInventory().getNonEquipmentItems()) {
             Item item = itemStack.getItem();
             if (!(item instanceof CompassItem)) continue;
             EasyNavigator.setPlayerHasCompass(true);
@@ -66,9 +66,9 @@ public class EasyNavigatorClient implements ClientModInitializer {
         EasyNavigator.setPlayerHasCompass(false);
     }
 
-    private boolean checkDimension(MinecraftClient minecraftClient) {
-        if (minecraftClient.world == null) return false;
-        double coordinateScale = minecraftClient.world.getDimension().coordinateScale();
+    private boolean checkDimension(Minecraft minecraftClient) {
+        if (minecraftClient.level == null) return false;
+        double coordinateScale = minecraftClient.level.dimensionType().coordinateScale();
         if (coordinateScale == lastCoordinateScale) return false;
         if (!EasyNavigator.hasTarget()) {
             lastCoordinateScale = coordinateScale;
@@ -88,19 +88,19 @@ public class EasyNavigatorClient implements ClientModInitializer {
         lastCoordinateScale = coordinateScale;
 
         NavigationMessages.sendMessage(
-            Text.translatable("easynavigator.command.converted").formatted(Formatting.WHITE)
-                .append(Text.literal(" "))
-                .append(Text.literal(String.format("[%s, ~, %s]", newBlockPos.getX(), newBlockPos.getZ())).formatted(Formatting.GREEN))
+            Component.translatable("easynavigator.command.converted").withStyle(ChatFormatting.WHITE)
+                .append(Component.literal(" "))
+                .append(Component.literal(String.format("[%s, ~, %s]", newBlockPos.getX(), newBlockPos.getZ())).withStyle(ChatFormatting.GREEN))
         );
     }
 
-    private void onWorldLeave(ClientPlayNetworkHandler clientPlayNetworkHandler, MinecraftClient minecraftClient) {
+    private void onWorldLeave(ClientPacketListener clientPlayNetworkHandler, Minecraft minecraftClient) {
         EasyNavigator.clearTargetBlockPos();
     }
 
-    private void onWorldJoin(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender packetSender, MinecraftClient minecraftClient) {
+    private void onWorldJoin(ClientPacketListener clientPlayNetworkHandler, PacketSender packetSender, Minecraft minecraftClient) {
         EasyNavigator.updateCompassNbt();
-        if (minecraftClient.world == null) return;
-        lastCoordinateScale = minecraftClient.world.getDimension().coordinateScale();
+        if (minecraftClient.level == null) return;
+        lastCoordinateScale = minecraftClient.level.dimensionType().coordinateScale();
     }
 }
