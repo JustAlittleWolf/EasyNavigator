@@ -9,13 +9,14 @@ import net.minecraft.network.chat.MutableComponent;
 
 public class NavigationMessages {
     private static final MutableComponent prefix = Component.translatable("easynavigator.prefix").withStyle(ChatFormatting.YELLOW).append(Component.literal(": ").withStyle(ChatFormatting.YELLOW));
+
     public static void sendMessage(MutableComponent message) {
         if (!Config.getConfig().navigatorMessages) return;
 
         LocalPlayer player = Minecraft.getInstance().player;
-        if(player == null) return;
+        if (player == null) return;
 
         message = prefix.copy().append(message);
-        player.displayClientMessage(message, false);
+        player.sendSystemMessage(message);
     }
 }

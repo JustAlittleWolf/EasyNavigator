@@ -1,24 +1,25 @@
 package me.wolfii.easynavigator.mixin;
 
-import me.wolfii.easynavigator.config.Config;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.wolfii.easynavigator.chat.TextTool;
-import net.minecraft.client.GuiMessage;
+import me.wolfii.easynavigator.config.Config;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.text.*;
 import org.intellij.lang.annotations.RegExp;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Mixin(ChatComponent.class)
-public class ChatHudMixin {
+public class ChatComponentMixin {
     @Unique
     @RegExp
     String pattern = "(?<=(^|[^.]))(-?\\b\\d+\\.?\\d*\\b[^.()\\d\\n:-][^()\\d\\n]{0,5}-?\\b\\d+\\.?\\d*\\b[^.()\\d\\n:-][^()\\d\\n]{0,5}-?\\b\\d+\\.?\\d*\\b|-?\\b\\d+\\.?\\d*\\b[^.()\\d\\n:-][^()\\d\\n]{0,5}-?\\b\\d+\\.?\\d*\\b)";
@@ -30,15 +31,27 @@ public class ChatHudMixin {
     /**
      * Checks the incoming message foor coordinates and if there are any, it makes them clickable.
      */
-    @ModifyArg(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessageToDisplayQueue(Lnet/minecraft/client/GuiMessage;)V"))
-    private GuiMessage checkForCoordinates(GuiMessage message) {
+    @WrapOperation(
+        method = "addMessage",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessageToDisplayQueue(Lnet/minecraft/client/multiplayer/chat/GuiMessage;)V"
+        )
+    )
+    private void checkForCoordinates(ChatComponent instance, GuiMessage message, Operation<Void> original) {
         if (Config.getConfig().matchingDistance != lastMatchingDistance) {
             coordinatePattern = Pattern.compile(pattern.replaceAll("5", String.valueOf(Config.getConfig().matchingDistance - 1)));
             lastMatchingDistance = Config.getConfig().matchingDistance;
         }
-        if (!Config.getConfig().highlightChatMessages) return message;
+        if (!Config.getConfig().highlightChatMessages) {
+            original.call(instance, message);
+            return;
+        }
         String text = sanitizeMessage(message.content().getString());
-        if (text.startsWith(Component.translatable("easynavigator.prefix").getString())) return message;
+        if (text.startsWith(Component.translatable("easynavigator.prefix").getString())) {
+            original.call(instance, message);
+            return;
+        }
         Matcher matcher = coordinatePattern.matcher(text);
 
         MutableComponent newMessage = message.content().copy();
@@ -48,7 +61,7 @@ public class ChatHudMixin {
             BlockPos matchPos = blockPosFromMatch(result);
             newMessage.append(TextTool.getMatchMessage(matchPos));
         }
-        return new GuiMessage(message.addedTime(), newMessage, message.signature(), message.tag());
+        original.call(instance, new GuiMessage(message.addedTime(), newMessage, message.signature(), message.source(), message.tag()));
     }
 
     @Unique

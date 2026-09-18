@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 public class EasyNavigator {
-    private static final ItemStack COMPASS_ITEM_STACK = new ItemStack(Items.COMPASS);
+    private static ItemStack COMPASS_ITEM_STACK = null;
     private static BlockPos targetBlockPos = new BlockPos(0, 0, 0);
     private static Vector2i renderingPosition = new Vector2i(0, 0);
     private static boolean hasTarget = false;
@@ -33,6 +33,9 @@ public class EasyNavigator {
             ResourceKey<Level> worldKey = minecraftClient.level.dimension();
 
             BlockPos targetBlockPos = EasyNavigator.targetBlockPos;
+            if (EasyNavigator.COMPASS_ITEM_STACK == null) {
+                EasyNavigator.COMPASS_ITEM_STACK = new ItemStack(Items.COMPASS);
+            }
             ComponentHelper.focusCompassOn(worldKey, targetBlockPos, EasyNavigator.COMPASS_ITEM_STACK);
         }
     }
@@ -54,15 +57,10 @@ public class EasyNavigator {
         };
     }
 
-    public static void setTargetBlockPos(@NotNull BlockPos blockPos) {
-        targetBlockPos = blockPos;
-        hasTarget = true;
-        updateCompassNbt();
-    }
-
     public static void clearTargetBlockPos() {
         navigationPaused = false;
         hasTarget = false;
+        EasyNavigator.COMPASS_ITEM_STACK = null;
     }
 
     public static ItemStack getCompassItemStack() {
@@ -77,6 +75,12 @@ public class EasyNavigator {
         return targetBlockPos;
     }
 
+    public static void setTargetBlockPos(@NotNull BlockPos blockPos) {
+        targetBlockPos = blockPos;
+        hasTarget = true;
+        updateCompassNbt();
+    }
+
     public static boolean hasTarget() {
         return hasTarget;
     }
@@ -85,7 +89,7 @@ public class EasyNavigator {
         if (minecraftClient.player == null) return;
         if (!hasTarget) return;
         Vec3 playerPos = minecraftClient.player.position().multiply(1, 0, 1);
-        Vec3 targetPos = targetBlockPos.getCenter().multiply(1, 0, 1);
+        Vec3 targetPos = new Vec3(targetBlockPos.getX() + 0.5, 0, targetBlockPos.getZ() + 0.5);
         double squaredDistanceToTarget = playerPos.distanceToSqr(targetPos);
         if (squaredDistanceToTarget < Config.getConfig().arrivalDistance * Config.getConfig().arrivalDistance) {
             hasTarget = false;

@@ -4,21 +4,23 @@ import me.wolfii.easynavigator.EasyNavigator;
 import me.wolfii.easynavigator.chat.NavigationMessages;
 import me.wolfii.easynavigator.config.Config;
 import me.wolfii.easynavigator.item.EasyNavigatorComponentData;
-import me.wolfii.easynavigator.render.NavigationRenderer;
+import me.wolfii.easynavigator.render.NavigationCompassHudElement;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CompassItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class EasyNavigatorClient implements ClientModInitializer {
     private double lastCoordinateScale = 1.0;
@@ -27,7 +29,7 @@ public class EasyNavigatorClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        HudRenderCallback.EVENT.register(NavigationRenderer::render);
+        HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("easynavigator", "navigation_compass"), new NavigationCompassHudElement());
 
         ClientPlayConnectionEvents.JOIN.register(this::onWorldJoin);
 
